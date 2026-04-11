@@ -1,0 +1,1 @@
+const res=document.getElementById('res');function run(){let g1=+g.value,r1=+r.value;res.innerText=g1<r1?'gRPC faster':'REST faster';}
