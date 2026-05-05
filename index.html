@@ -1,120 +1,844 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>API Tools – REST, GraphQL, gRPC & Performance Testing</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="PkLa_ViOo6FAHpvh8SacceMb95o9tePRdrqLNBz9X1M" />
+<meta name="robots" content="index, follow">
 
-  <!-- Google verification -->
-  <meta name="google-site-verification" content="PkLa_ViOo6FAHpvh8SacceMb95o9tePRdrqLNBz9X1M" />
+<title>REST vs GraphQL vs gRPC Testing – Interactive Comparison Tool &amp; Performance Guide (2025)</title>
 
-  <!-- SEO -->
-  <meta name="description" content="API tools for REST, GraphQL, and gRPC development. Analyze latency, load, contracts, schema, and performance.">
-  <meta name="keywords" content="api tools, graphql schema visualizer, grpc vs rest comparison, api latency testing tool, rest api builder, graphql cost analysis">
+<meta name="description" content="REST vs GraphQL vs gRPC testing comparison 2025. Interactive tool: compare request/response formats, latency benchmarks, payload sizes, and use cases. Includes test examples for all three API protocols.">
 
-  <!-- AdSense -->
-  <meta name="google-adsense-account" content="ca-pub-XXXXXXXXXXXXXXXX">
+<meta name="keywords" content="rest graphql grpc testing, rest vs graphql vs grpc, graphql grpc rest comparison, api protocol comparison, grpc testing, graphql testing, rest api testing, rest vs grpc performance, graphql vs rest performance, api testing tools 2025">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="API Tools – REST, GraphQL & gRPC Analysis">
-  <meta property="og:description" content="Build, test, and optimize APIs with performance and schema tools.">
-  <meta property="og:type" content="website">
+<link rel="canonical" href="https://franrivalbigprojects.github.io/api-tools/">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #020617;
-      color: #e2e8f0;
-      margin: 0;
-      padding: 40px;
-    }
-    h1 {
-      color: #38bdf8;
-    }
-    p {
-      max-width: 1000px;
-      line-height: 1.6;
-    }
-    .tools {
-      columns: 2;
-      margin-top: 20px;
-    }
-    .tool {
-      background: #1e293b;
-      padding: 12px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      break-inside: avoid;
-      transition: 0.2s;
-    }
-    .tool:hover {
-      background: #334155;
-    }
-    a {
-      color: #22c55e;
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
+<meta property="og:title" content="REST vs GraphQL vs gRPC Testing – Interactive Comparison 2025">
+<meta property="og:description" content="Compare REST, GraphQL, and gRPC: request formats, performance benchmarks, payload size, and testing approaches. Interactive examples for all three protocols.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #040810;
+  --surface: #060d1c;
+  --surface2: #0a1428;
+  --border: #0e1e38;
+  --border2: #142848;
+  --rest: #38bdf8;
+  --rest-dim: rgba(56,189,248,0.10);
+  --rest-dim2: rgba(56,189,248,0.05);
+  --gql: #e879f9;
+  --gql-dim: rgba(232,121,249,0.10);
+  --gql-dim2: rgba(232,121,249,0.05);
+  --grpc: #fb923c;
+  --grpc-dim: rgba(251,146,60,0.10);
+  --grpc-dim2: rgba(251,146,60,0.05);
+  --green: #22c55e;
+  --green-dim2: rgba(34,197,94,0.05);
+  --yellow: #fbbf24;
+  --yellow-dim: rgba(251,191,36,0.08);
+  --text: #b0c8e8;
+  --text-muted: #3a5070;
+  --text-dim: #0f1838;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --r: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+header {
+  border-bottom: 1px solid var(--border2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(4,8,16,0.97);
+  backdrop-filter: blur(12px);
+}
+
+.header-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-pill {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+.lp-rest { color: var(--rest); background: var(--rest-dim2); border-color: rgba(56,189,248,0.3); }
+.lp-gql  { color: var(--gql);  background: var(--gql-dim2);  border-color: rgba(232,121,249,0.3); }
+.lp-grpc { color: var(--grpc); background: var(--grpc-dim2); border-color: rgba(251,146,60,0.3); }
+.logo-text { font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
+
+.wrapper {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  padding: 44px 0 24px;
+  border-bottom: 1px solid var(--border2);
+  margin-bottom: 22px;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rest);
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+h1 {
+  font-size: clamp(22px, 3.2vw, 30px);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 640px;
+  line-height: 1.75;
+}
+
+.hero-sub strong { color: var(--text); }
+
+/* PROTOCOL SELECTOR */
+.tool-shell {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.tool-topbar {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border2);
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.topbar-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.proto-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.proto-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 5px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+
+.proto-btn:hover { color: var(--text); }
+.proto-btn.active-rest { border-color: var(--rest); background: var(--rest-dim2); color: var(--rest); }
+.proto-btn.active-gql  { border-color: var(--gql);  background: var(--gql-dim2);  color: var(--gql); }
+.proto-btn.active-grpc { border-color: var(--grpc); background: var(--grpc-dim2); color: var(--grpc); }
+
+.scenario-row {
+  display: flex;
+  gap: 6px;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--border2);
+  background: var(--bg);
+  flex-wrap: wrap;
+}
+
+.scen-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 4px 12px;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.scen-btn:hover { border-color: var(--rest); color: var(--text); }
+.scen-btn.active { border-color: var(--rest); background: var(--rest-dim2); color: var(--rest); }
+
+.example-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.ex-pane {
+  padding: 14px 16px;
+  border-right: 1px solid var(--border2);
+}
+
+.ex-pane:last-child { border-right: none; }
+
+.ex-head {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  padding: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.75;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--text-muted);
+  min-height: 160px;
+}
+
+.ck { color: var(--rest); }
+.cg { color: var(--gql); }
+.co { color: var(--grpc); }
+.cs { color: var(--yellow); }
+.cm { color: var(--text-dim); }
+.cv { color: var(--green); }
+
+/* BENCHMARK BARS */
+.bench-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.bench-col {
+  background: var(--surface);
+  padding: 16px;
+}
+
+.bc-head {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border2);
+}
+
+.bench-row { margin-bottom: 14px; }
+.bench-row:last-child { margin-bottom: 0; }
+
+.br-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.br-val { font-weight: 600; }
+
+.br-track {
+  width: 100%;
+  height: 8px;
+  background: var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.br-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s ease;
+}
+
+/* COMPARISON TABLE */
+.cmp-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  margin-bottom: 14px;
+}
+
+.cmp-table th, .cmp-table td {
+  padding: 9px 12px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 11px;
+  border-bottom: 1px solid var(--border2);
+}
+
+.cmp-table th {
+  background: var(--surface2);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cmp-table th.th-rest { color: var(--rest); }
+.cmp-table th.th-gql  { color: var(--gql); }
+.cmp-table th.th-grpc { color: var(--grpc); }
+.cmp-table td { color: var(--text-muted); }
+.cmp-table tr:last-child td { border-bottom: none; }
+.cmp-table tr:hover td { background: rgba(56,189,248,0.02); }
+.td-feat { color: var(--text); font-weight: 500; width: 150px; }
+
+/* SECTION */
+hr.divider { border: none; border-top: 1px solid var(--border2); margin: 50px 0; }
+.content-section { margin-bottom: 50px; }
+
+.sec-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.sec-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--rest);
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+.sec-rule { flex: 1; height: 1px; background: var(--border2); }
+
+p { font-size: 14px; color: var(--text-muted); line-height: 1.8; margin-bottom: 10px; max-width: 820px; }
+p strong { color: var(--text); }
+
+code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--surface2);
+  color: var(--rest);
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+}
+
+.dense-block {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 22px;
+  margin-top: 14px;
+}
+
+.dense-block p { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border2); max-width: none; }
+.dense-block p:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+.faq-list { margin-top: 14px; border: 1px solid var(--border2); border-radius: var(--r); overflow: hidden; }
+.faq-item { border-bottom: 1px solid var(--border2); }
+.faq-item:last-child { border-bottom: none; }
+
+.faq-q {
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: none;
+  padding: 13px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  font-family: var(--sans);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.15s;
+}
+
+.faq-q:hover { background: var(--rest-dim2); }
+.faq-arrow { font-family: var(--mono); font-size: 11px; color: var(--text-dim); transition: transform 0.2s; flex-shrink: 0; }
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+.faq-a {
+  display: none;
+  padding: 0 18px 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.75;
+  border-top: 1px solid var(--border2);
+  background: var(--bg);
+}
+
+.faq-item.open .faq-a { display: block; }
+.faq-a code { color: var(--rest); background: var(--rest-dim2); }
+
+.subtools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.stl {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.15s;
+}
+
+.stl:hover { border-color: rgba(56,189,248,0.3); }
+.stl-eye  { font-family: var(--mono); font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+.stl-name { font-family: var(--mono); font-size: 12px; color: var(--rest); font-weight: 500; }
+
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 50px; }
+.tag {
+  font-family: var(--mono); font-size: 10px; color: var(--text-muted);
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 100px; padding: 4px 12px; cursor: default;
+}
+.tag:hover { color: var(--rest); border-color: rgba(56,189,248,0.3); }
+
+footer { border-top: 1px solid var(--border2); padding: 20px 0; position: relative; z-index: 1; }
+.footer-inner {
+  max-width: 1060px; margin: 0 auto; padding: 0 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 8px;
+}
+footer p { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin: 0; }
+
+@media (max-width: 640px) {
+  .example-split { grid-template-columns: 1fr; }
+  .bench-grid { grid-template-columns: 1fr; }
+  .ex-pane { border-right: none; border-bottom: 1px solid var(--border2); }
+}
+</style>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"REST vs GraphQL vs gRPC Testing – Comparison Guide 2025","description":"Complete comparison of REST, GraphQL, and gRPC for API testing. Request/response formats, latency benchmarks, payload sizes, testing tools, and use case recommendations.","keywords":"rest graphql grpc testing, rest vs graphql vs grpc, graphql vs rest performance, grpc testing, graphql testing, rest api testing"}
+</script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the difference between REST, GraphQL, and gRPC?","acceptedAnswer":{"@type":"Answer","text":"REST, GraphQL, and gRPC are different API protocols serving different needs. REST uses HTTP verbs (GET, POST, PUT, DELETE) with URL-based resources and JSON responses — simplest to build and test, widely supported. GraphQL uses a single endpoint with a query language — clients specify exactly what data they need, eliminating over-fetching. gRPC uses Protocol Buffers (binary serialization) over HTTP/2 — fastest performance (2-10x faster than REST/GraphQL), but harder to test and debug due to binary format. Choose REST for public APIs, GraphQL for complex data requirements, gRPC for internal microservice communication."}},{"@type":"Question","name":"Which is faster: REST, GraphQL, or gRPC?","acceptedAnswer":{"@type":"Answer","text":"gRPC is the fastest API protocol — Protocol Buffers (protobuf) binary serialization is 3-10x more compact than JSON, and HTTP/2 multiplexing reduces connection overhead. In benchmarks, gRPC is typically 2-7x faster than REST JSON and 3-8x faster than GraphQL JSON for the same data. However, gRPC cannot be tested in a browser directly and requires specific tooling. REST and GraphQL are similar in performance, but GraphQL can reduce payload size by 40-80% by requesting only needed fields, improving effective throughput."}}]}
+</script>
+
 </head>
+
 <body>
+<header>
+  <div class="header-inner">
+    <span class="logo-pill lp-rest">REST</span>
+    <span class="logo-pill lp-gql">GraphQL</span>
+    <span class="logo-pill lp-grpc">gRPC</span>
+    <span class="logo-text">&middot; testing comparison 2025</span>
+  </div>
+</header>
 
-  <h1>API Development Tools</h1>
+<div class="wrapper">
 
-  <p>
-    A collection of tools for building, testing, and optimizing APIs using REST,
-    GraphQL, and gRPC. Analyze performance, latency, schema, and contracts.
-  </p>
+  <section class="hero">
+    <p class="hero-eyebrow">// API Protocol Testing Guide 2025</p>
+    <h1>REST vs GraphQL vs gRPC —<br>Testing, Performance &amp; Comparison</h1>
+    <p class="hero-sub">
+      Interactive examples for <strong>REST, GraphQL, and gRPC</strong>: request/response formats, latency benchmarks, payload sizes, testing tools, and when to use each protocol.
+    </p>
+  </section>
 
-  <p>
-    These tools help backend developers and DevOps teams
-    design reliable and scalable API systems.
-  </p>
+  <!-- INTERACTIVE EXAMPLES -->
 
-  <div class="tools">
+  <div class="tool-shell">
+    <div class="tool-topbar">
+      <span class="topbar-label">// Protocol Examples — Request &amp; Response</span>
+      <div class="proto-tabs">
+        <button class="proto-btn active-rest" id="btnREST" onclick="setProto('REST',this)">REST</button>
+        <button class="proto-btn" id="btnGQL" onclick="setProto('GraphQL',this)">GraphQL</button>
+        <button class="proto-btn" id="btnGRPC" onclick="setProto('gRPC',this)">gRPC</button>
+      </div>
+    </div>
 
-    <div class="tool"><a href="./flow/">API Flow Visualizer</a></div>
-    <div class="tool"><a href="./graphql-cost/">GraphQL Cost Analyzer</a></div>
-    <div class="tool"><a href="./graphql-schema/">GraphQL Schema Tool</a></div>
-    <div class="tool"><a href="./graphql-visualizer/">GraphQL Visualizer</a></div>
-    <div class="tool"><a href="./grpc-proto/">gRPC Proto Analyzer</a></div>
-    <div class="tool"><a href="./grpc-rest/">gRPC vs REST Tool</a></div>
-    <div class="tool"><a href="./latency/">API Latency Analyzer</a></div>
-    <div class="tool"><a href="./load/">API Load Tester</a></div>
-    <div class="tool"><a href="./rest-builder/">REST API Builder</a></div>
-    <div class="tool"><a href="./rest-contract/">REST Contract Validator</a></div>
+
+<div class="scenario-row">
+  <button class="scen-btn active" onclick="setScenario('getUser',this)">Get User</button>
+  <button class="scen-btn" onclick="setScenario('createPost',this)">Create Post</button>
+  <button class="scen-btn" onclick="setScenario('listItems',this)">List Items</button>
+  <button class="scen-btn" onclick="setScenario('delete',this)">Delete</button>
+  <button class="scen-btn" onclick="setScenario('error',this)">Error Handling</button>
+</div>
+
+<div class="example-split">
+  <div class="ex-pane">
+    <div class="ex-head" id="reqHead">// Request</div>
+    <div class="code-block" id="reqBlock"></div>
+  </div>
+  <div class="ex-pane">
+    <div class="ex-head" id="resHead">// Response</div>
+    <div class="code-block" id="resBlock"></div>
+  </div>
+</div>
+
 
   </div>
 
-  <!-- SEO LONG TAIL -->
-  <h2>Common API Queries</h2>
+  <!-- BENCHMARKS -->
 
-  <ul>
-    <li>graphql schema visualizer example and tools</li>
-    <li>grpc vs rest performance comparison explained</li>
-    <li>how to test api latency and load performance</li>
-    <li>rest api contract validation best practices</li>
-    <li>graphql cost analysis query optimization</li>
-    <li>how to design scalable api architecture</li>
-    <li>api performance optimization techniques backend</li>
-  </ul>
+  <div class="bench-grid">
+    <div class="bench-col">
+      <div class="bc-head" style="color:var(--rest)">REST / JSON</div>
+      <div class="bench-row">
+        <div class="br-label"><span>Avg Latency</span><span class="br-val" style="color:var(--rest)">~45ms</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--rest);width:55%;"></div></div>
+      </div>
+      <div class="bench-row">
+        <div class="br-label"><span>Payload Size</span><span class="br-val" style="color:var(--rest)">~2.4KB</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--rest);width:65%;"></div></div>
+      </div>
+      <div class="bench-row">
+        <div class="br-label"><span>Browser support</span><span class="br-val" style="color:var(--green)">Native</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--green);width:95%;"></div></div>
+      </div>
+      <div class="bench-row">
+        <div class="br-label"><span>Test tooling</span><span class="br-val" style="color:var(--green)">Excellent</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--green);width:90%;"></div></div>
+      </div>
+    </div>
+    <div class="bench-col">
+      <div class="bc-head" style="color:var(--gql)">GraphQL / JSON</div>
+      <div class="bench-row">
+        <div class="br-label"><span>Avg Latency</span><span class="br-val" style="color:var(--gql)">~55ms</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--gql);width:48%;"></div></div>
+      </div>
+      <div class="bench-row">
+        <div class="br-label"><span>Payload Size</span><span class="br-val" style="color:var(--gql)">~0.8KB</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--gql);width:22%;"></div></div>
+      </div>
+      <div class="bench-row">
+        <div class="br-label"><span>Browser support</span><span class="br-val" style="color:var(--green)">Native (HTTP)</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--green);width:85%;"></div></div>
+      </div>
+      <div class="bench-row">
+        <div class="br-label"><span>Test tooling</span><span class="br-val" style="color:var(--yellow)">Good</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--yellow);width:70%;"></div></div>
+      </div>
+    </div>
+    <div class="bench-col">
+      <div class="bc-head" style="color:var(--grpc)">gRPC / Protobuf</div>
+      <div class="bench-row">
+        <div class="br-label"><span>Avg Latency</span><span class="br-val" style="color:var(--grpc)">~12ms</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--grpc);width:90%;"></div></div>
+      </div>
+      <div class="bench-row">
+        <div class="br-label"><span>Payload Size</span><span class="br-val" style="color:var(--grpc)">~0.3KB</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--grpc);width:8%;"></div></div>
+      </div>
+      <div class="bench-row">
+        <div class="br-label"><span>Browser support</span><span class="br-val" style="color:var(--grpc)">Limited (grpc-web)</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--grpc);width:30%;"></div></div>
+      </div>
+      <div class="bench-row">
+        <div class="br-label"><span>Test tooling</span><span class="br-val" style="color:var(--grpc)">Complex</span></div>
+        <div class="br-track"><div class="br-fill" style="background:var(--grpc);width:40%;"></div></div>
+      </div>
+    </div>
+  </div>
 
-  <p>
-    These tools are ideal for backend developers, API designers,
-    and teams building scalable microservices.
-  </p>
+  <hr class="divider">
 
-  <!-- snippet -->
-  <pre>
-GET /api/users
+  <!-- COMPARISON TABLE -->
 
-query {
-  users {
-    id
-    name
+  <section class="content-section">
+    <div class="sec-head">
+      <span class="sec-label">REST vs GraphQL vs gRPC — full comparison</span>
+      <span class="sec-rule"></span>
+    </div>
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th class="td-feat">Property</th>
+          <th class="th-rest">REST</th>
+          <th class="th-gql">GraphQL</th>
+          <th class="th-grpc">gRPC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="td-feat">Transport</td><td>HTTP/1.1 or HTTP/2</td><td>HTTP/1.1 or HTTP/2</td><td>HTTP/2 (required)</td></tr>
+        <tr><td class="td-feat">Serialization</td><td>JSON (text)</td><td>JSON (text)</td><td>Protocol Buffers (binary)</td></tr>
+        <tr><td class="td-feat">Schema/contract</td><td>OpenAPI / Swagger</td><td>GraphQL SDL (required)</td><td>.proto file (required)</td></tr>
+        <tr><td class="td-feat">Endpoints</td><td>Multiple (per resource)</td><td>Single /graphql</td><td>Methods in service</td></tr>
+        <tr><td class="td-feat">Over-fetching</td><td>Common (fixed responses)</td><td>None (query only needed)</td><td>None (typed fields)</td></tr>
+        <tr><td class="td-feat">Streaming</td><td>SSE / Websockets</td><td>Subscriptions</td><td>Native bi-directional</td></tr>
+        <tr><td class="td-feat">Browser</td><td>Native fetch/XHR</td><td>Native HTTP POST</td><td>Requires grpc-web proxy</td></tr>
+        <tr><td class="td-feat">Testing tools</td><td>curl, Postman, Insomnia</td><td>GraphQL Playground, Apollo</td><td>grpcurl, evans, Postman</td></tr>
+        <tr><td class="td-feat">Best for</td><td>Public APIs, CRUD, simple services</td><td>Complex data, mobile, BFF pattern</td><td>Microservices, internal APIs, streaming</td></tr>
+        <tr><td class="td-feat">Performance</td><td>Good</td><td>Good (smaller payload)</td><td>Best (binary, HTTP/2)</td></tr>
+        <tr><td class="td-feat">Learning curve</td><td>Low</td><td>Medium</td><td>High</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- TESTING GUIDE -->
+
+  <section class="content-section">
+    <div class="sec-head">
+      <span class="sec-label">How to test each protocol</span>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="dense-block">
+      <p><strong>Testing REST APIs — curl, Postman, k6</strong><br>
+      REST is the easiest to test — any HTTP client works. <strong>curl</strong>: <code>curl -X POST https://api.example.com/users -H "Content-Type: application/json" -d '{"name":"Alice"}'</code>. <strong>Postman</strong>: import OpenAPI spec, generate requests automatically. <strong>k6</strong> for load testing: <code>import http from 'k6/http'; export default function() { http.get('https://api.example.com/users'); }</code>. <strong>Integration testing</strong>: use supertest (Node.js) for in-process testing — no network call needed.</p>
+      <p><strong>Testing GraphQL — GraphQL Playground, Apollo Studio, k6</strong><br>
+      GraphQL always uses POST to a single endpoint. <strong>GraphQL Playground</strong> / <strong>Apollo Sandbox</strong>: built-in schema introspection, query builder, autocomplete. <strong>curl</strong>: <code>curl -X POST /graphql -H "Content-Type: application/json" -d '{"query":"{ users { id name } }"}'</code>. <strong>Load testing with k6-xk6-browser</strong>: test query performance under load. <strong>Key test cases</strong>: N+1 query detection (use DataLoader), depth limiting (prevent deeply nested queries), introspection disabling in production.</p>
+      <p><strong>Testing gRPC — grpcurl, evans, Postman</strong><br>
+      gRPC uses binary Protocol Buffers — can't use plain curl. <strong>grpcurl</strong>: <code>grpcurl -d '{"user_id": "123"}' localhost:50051 users.UserService/GetUser</code>. <strong>evans</strong>: interactive gRPC CLI with proto reflection. <strong>Postman</strong> (v9.7+): supports gRPC natively — import .proto file and test interactively. <strong>Load testing</strong>: ghz tool — <code>ghz --call users.UserService/GetUser -d '{"user_id":"1"}' localhost:50051</code>. <strong>Challenge</strong>: server reflection must be enabled for grpcurl without a .proto file.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+
+  <section class="content-section">
+    <div class="sec-head">
+      <span class="sec-label">FAQ — REST GraphQL gRPC testing</span>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Which is faster: REST, GraphQL, or gRPC?<span class="faq-arrow">&#9660;</span></button>
+        <div class="faq-a"><strong>gRPC is the fastest</strong> — Protocol Buffers binary serialization is 3-10x more compact than JSON, and HTTP/2 multiplexing reduces connection overhead. Typical benchmark: gRPC ~12ms, REST ~45ms, GraphQL ~55ms for equivalent data. However, GraphQL can significantly reduce payload size vs REST by requesting only needed fields — on mobile networks, this often matters more than raw latency. For browser-facing APIs, REST and GraphQL are better choices due to gRPC's limited browser support.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How do I test a gRPC API?<span class="faq-arrow">&#9660;</span></button>
+        <div class="faq-a"><strong>grpcurl</strong> (like curl for gRPC): <code>grpcurl -plaintext -d '{"user_id":"1"}' localhost:50051 users.UserService/GetUser</code>. Requires server reflection enabled or a .proto file. <strong>evans</strong>: interactive REPL for gRPC testing. <strong>Postman</strong> (v9.7+): GUI gRPC client, import .proto. <strong>ghz</strong> for load testing. For Go: use <code>google.golang.org/grpc/test/bufconn</code> for in-process testing. For Node.js: use <code>@grpc/grpc-js</code> with mock server.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">When should I use GraphQL instead of REST?<span class="faq-arrow">&#9660;</span></button>
+        <div class="faq-a">Choose GraphQL when: (1) <strong>Multiple client types</strong> need different data shapes (mobile vs desktop). (2) <strong>Over-fetching is a problem</strong> — REST returns 20 fields but mobile only needs 3. (3) <strong>Complex relationships</strong> — avoid 4 REST calls by fetching user + posts + comments + likes in one query. (4) <strong>Rapid frontend iteration</strong> — frontend can add fields without backend changes. Avoid GraphQL for: public APIs (REST is simpler), simple CRUD, caching-heavy architectures (REST caches naturally, GraphQL doesn't).</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Can you use REST, GraphQL, and gRPC in the same system?<span class="faq-arrow">&#9660;</span></button>
+        <div class="faq-a">Yes — this is the most common production pattern. A typical architecture: <strong>Public API</strong> = REST (simple, widely supported). <strong>Frontend BFF</strong> = GraphQL (flexible queries from React/mobile). <strong>Internal microservices</strong> = gRPC (performance, streaming, type safety). Example: React app → GraphQL BFF → multiple gRPC microservices → public partner API via REST. The GraphQL layer acts as a translation layer that aggregates gRPC calls from multiple services into a single query.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="sec-head">
+      <span class="sec-label">API tools</span>
+      <span class="sec-rule"></span>
+    </div>
+    <div class="subtools-grid">
+      <a href="latency/" class="stl"><p class="stl-eye">perf //</p><span class="stl-name">API Latency Analyzer</span></a>
+      <a href="graphql-schema/" class="stl"><p class="stl-eye">schema //</p><span class="stl-name">GraphQL Schema Tool</span></a>
+      <a href="grpc-proto/" class="stl"><p class="stl-eye">proto //</p><span class="stl-name">gRPC Proto Analyzer</span></a>
+      <a href="load/" class="stl"><p class="stl-eye">load //</p><span class="stl-name">API Load Tester</span></a>
+      <a href="rest-builder/" class="stl"><p class="stl-eye">builder //</p><span class="stl-name">REST API Builder</span></a>
+    </div>
+  </section>
+
+  <div class="tag-cloud">
+    <span class="tag">rest graphql grpc testing</span>
+    <span class="tag">rest vs graphql vs grpc</span>
+    <span class="tag">grpc testing tools</span>
+    <span class="tag">graphql testing</span>
+    <span class="tag">rest api testing</span>
+    <span class="tag">grpc vs rest performance</span>
+    <span class="tag">graphql vs rest payload size</span>
+    <span class="tag">api protocol comparison 2025</span>
+    <span class="tag">grpcurl testing</span>
+    <span class="tag">graphql playground</span>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <p>rest-graphql-grpc-testing &middot; comparison &middot; api protocols &middot; 2025</p>
+    <p>postman &middot; grpcurl &middot; graphql playground &middot; k6 &middot; github pages</p>
+  </div>
+</footer>
+
+<script>
+var EXAMPLES = {
+  REST: {
+    getUser: {
+      req: 'GET /api/users/123 HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer eyJhbGci...\nAccept: application/json',
+      res: 'HTTP/1.1 200 OK\nContent-Type: application/json\n\n{\n  "id": "123",\n  "name": "Alice Johnson",\n  "email": "alice@example.com",\n  "role": "admin",\n  "createdAt": "2025-01-15T10:30:00Z",\n  "updatedAt": "2025-04-20T08:15:00Z",\n  "profilePic": "https://cdn.example.com/alice.jpg"\n}'
+    },
+    createPost: {
+      req: 'POST /api/posts HTTP/1.1\nHost: api.example.com\nContent-Type: application/json\nAuthorization: Bearer eyJhbGci...\n\n{\n  "title": "My First Post",\n  "body": "Hello world content here.",\n  "authorId": "123",\n  "tags": ["api", "rest"]\n}',
+      res: 'HTTP/1.1 201 Created\nLocation: /api/posts/456\nContent-Type: application/json\n\n{\n  "id": "456",\n  "title": "My First Post",\n  "authorId": "123",\n  "createdAt": "2025-05-04T12:00:00Z"\n}'
+    },
+    listItems: {
+      req: 'GET /api/posts?limit=10&offset=0&sort=createdAt:desc HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer eyJhbGci...',
+      res: 'HTTP/1.1 200 OK\nContent-Type: application/json\n\n{\n  "data": [\n    {"id":"1","title":"Post A","author":"Alice"},\n    {"id":"2","title":"Post B","author":"Bob"}\n  ],\n  "total": 142,\n  "limit": 10,\n  "offset": 0\n}'
+    },
+    delete: {
+      req: 'DELETE /api/posts/456 HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer eyJhbGci...',
+      res: 'HTTP/1.1 204 No Content\n\n(empty body)'
+    },
+    error: {
+      req: 'GET /api/users/999 HTTP/1.1\nHost: api.example.com\nAuthorization: Bearer eyJhbGci...',
+      res: 'HTTP/1.1 404 Not Found\nContent-Type: application/json\n\n{\n  "error": "NOT_FOUND",\n  "message": "User with id 999 does not exist",\n  "requestId": "req_abc123",\n  "timestamp": "2025-05-04T12:00:00Z"\n}'
+    }
+  },
+  GraphQL: {
+    getUser: {
+      req: 'POST /graphql HTTP/1.1\nContent-Type: application/json\nAuthorization: Bearer eyJhbGci...\n\n{\n  "query": "query GetUser($id: ID!) {\\n    user(id: $id) {\\n      id\\n      name\\n      email\\n    }\\n  }",\n  "variables": { "id": "123" }\n}',
+      res: 'HTTP/1.1 200 OK\nContent-Type: application/json\n\n{\n  "data": {\n    "user": {\n      "id": "123",\n      "name": "Alice Johnson",\n      "email": "alice@example.com"\n    }\n  }\n}\n\n// Note: only requested fields returned\n// No profilePic, role, timestamps (not asked)'
+    },
+    createPost: {
+      req: 'POST /graphql HTTP/1.1\nContent-Type: application/json\n\n{\n  "query": "mutation CreatePost($input: PostInput!) {\\n    createPost(input: $input) {\\n      id\\n      title\\n      createdAt\\n    }\\n  }",\n  "variables": {\n    "input": {\n      "title": "My First Post",\n      "body": "Hello world",\n      "authorId": "123"\n    }\n  }\n}',
+      res: 'HTTP/1.1 200 OK\n\n{\n  "data": {\n    "createPost": {\n      "id": "456",\n      "title": "My First Post",\n      "createdAt": "2025-05-04T12:00:00Z"\n    }\n  }\n}'
+    },
+    listItems: {
+      req: 'POST /graphql HTTP/1.1\nContent-Type: application/json\n\n{\n  "query": "query { posts(limit: 10, offset: 0) {\\n    data { id title author { name } }\\n    pageInfo { total hasNextPage }\\n  } }"\n}',
+      res: '{\n  "data": {\n    "posts": {\n      "data": [\n        {"id":"1","title":"Post A","author":{"name":"Alice"}},\n        {"id":"2","title":"Post B","author":{"name":"Bob"}}\n      ],\n      "pageInfo": {"total":142,"hasNextPage":true}\n    }\n  }\n}'
+    },
+    delete: {
+      req: 'POST /graphql HTTP/1.1\n\n{\n  "query": "mutation DeletePost($id: ID!) {\\n    deletePost(id: $id) {\\n      success\\n    }\\n  }",\n  "variables": { "id": "456" }\n}',
+      res: '{\n  "data": {\n    "deletePost": {\n      "success": true\n    }\n  }\n}'
+    },
+    error: {
+      req: 'POST /graphql HTTP/1.1\n\n{\n  "query": "query { user(id: \\"999\\") { id name } }"\n}',
+      res: 'HTTP/1.1 200 OK\n\n{\n  "data": { "user": null },\n  "errors": [{\n    "message": "User not found",\n    "locations": [{"line":1,"column":9}],\n    "path": ["user"],\n    "extensions": {\n      "code": "NOT_FOUND",\n      "id": "999"\n    }\n  }]\n}\n\n// Note: GraphQL always returns 200\n// Errors are in the errors array'
+    }
+  },
+  gRPC: {
+    getUser: {
+      req: '// .proto definition:\nservice UserService {\n  rpc GetUser (GetUserRequest) returns (User);\n}\nmessage GetUserRequest { string user_id = 1; }\n\n// grpcurl command:\ngrpcurl -plaintext \\\n  -d \'{"user_id": "123"}\' \\\n  localhost:50051 \\\n  users.UserService/GetUser',
+      res: '// Binary protobuf on wire\n// Decoded response:\n{\n  "id": "123",\n  "name": "Alice Johnson",\n  "email": "alice@example.com"\n}\n\n// Metadata:\n// Status: OK (0)\n// Content-Type: application/grpc\n// Trailer: grpc-status: 0'
+    },
+    createPost: {
+      req: '// .proto:\nrpc CreatePost (CreatePostRequest) returns (Post);\nmessage CreatePostRequest {\n  string title = 1;\n  string body = 2;\n  string author_id = 3;\n}\n\n// grpcurl:\ngrpcurl -d \'{\n  "title": "My First Post",\n  "body": "Hello world",\n  "author_id": "123"\n}\' localhost:50051 \\\nposts.PostService/CreatePost',
+      res: '// Decoded response:\n{\n  "id": "456",\n  "title": "My First Post",\n  "created_at": {\n    "seconds": 1746355200,\n    "nanos": 0\n  }\n}\n\n// Trailer:\n// grpc-status: 0\n// grpc-message: (empty = OK)'
+    },
+    listItems: {
+      req: '// Server-side streaming RPC:\nrpc ListPosts (ListPostsRequest)\n  returns (stream Post);\n\n// Each page chunk is a separate\n// protobuf message over HTTP/2\n// No need to buffer entire response\n\ngrpcurl -d \'{"limit":10,"offset":0}\' \\\n  localhost:50051 \\\n  posts.PostService/ListPosts',
+      res: '// Response streams message by message:\n{"id":"1","title":"Post A","author_id":"user1"}\n{"id":"2","title":"Post B","author_id":"user2"}\n// ... 8 more messages ...\n\n// Trailer:\n// grpc-status: 0'
+    },
+    delete: {
+      req: '// .proto:\nrpc DeletePost (DeletePostRequest)\n  returns (google.protobuf.Empty);\n\nmessage DeletePostRequest {\n  string post_id = 1;\n}\n\ngrpcurl -d \'{"post_id": "456"}\' \\\n  localhost:50051 \\\n  posts.PostService/DeletePost',
+      res: '// google.protobuf.Empty = {} (no body)\n{}\n\n// Trailer:\n// grpc-status: 0\n// (0 = OK, equivalent to 200)'
+    },
+    error: {
+      req: 'grpcurl -d \'{"user_id": "999"}\' \\\n  localhost:50051 \\\n  users.UserService/GetUser',
+      res: '// gRPC status codes (not HTTP):\n// 0=OK, 1=CANCELLED, 2=UNKNOWN\n// 3=INVALID_ARGUMENT, 5=NOT_FOUND\n// 7=PERMISSION_DENIED, etc.\n\nERROR:\n  Code: NotFound\n  Message: user 999 not found\n\n// Trailer:\n// grpc-status: 5\n// grpc-message: user 999 not found'
+    }
   }
+};
+
+var currentProto = 'REST';
+var currentScen  = 'getUser';
+
+function setProto(proto, btn) {
+  currentProto = proto;
+  document.querySelectorAll('.proto-btn').forEach(function(b) {
+    b.classList.remove('active-rest', 'active-gql', 'active-grpc');
+  });
+  var cls = proto === 'REST' ? 'active-rest' : proto === 'GraphQL' ? 'active-gql' : 'active-grpc';
+  btn.classList.add(cls);
+  updateExamples();
 }
-  </pre>
+
+function setScenario(scen, btn) {
+  currentScen = scen;
+  document.querySelectorAll('.scen-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  updateExamples();
+}
+
+function updateExamples() {
+  var ex = EXAMPLES[currentProto] && EXAMPLES[currentProto][currentScen];
+  if (!ex) return;
+  document.getElementById('reqBlock').textContent = ex.req;
+  document.getElementById('resBlock').textContent = ex.res;
+
+  var color = currentProto === 'REST' ? 'var(--rest)' : currentProto === 'GraphQL' ? 'var(--gql)' : 'var(--grpc)';
+  document.getElementById('reqBlock').style.borderLeftColor = color;
+  document.getElementById('resBlock').style.borderLeftColor = color;
+  document.getElementById('reqBlock').style.borderLeft = '3px solid ' + color;
+  document.getElementById('resBlock').style.borderLeft = '3px solid ' + color;
+}
+
+function toggleFaq(btn) {
+  btn.parentElement.classList.toggle('open');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  updateExamples();
+});
+</script>
 
 </body>
 </html>
